@@ -22,7 +22,6 @@ export default function Chessboard() {
           key={index}
           keyvalue={index}
           img={piece ? piece.img : null}
-          //color={piece.color}
         />)} 
     </div>
   )

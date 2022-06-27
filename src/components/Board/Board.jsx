@@ -12,7 +12,6 @@ export default class Board extends Component {
           return <Tile 
                key={i}
                keyValue={i}
-               //style={this.props.tiles[i] ? this.props.tiles[i].style : null}
                shade={squareShade}
                onClick={() => this.props.onClick(i)}
           />
