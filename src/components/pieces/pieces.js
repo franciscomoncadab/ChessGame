@@ -1,4 +1,4 @@
-export default class Pieces {
+export default class Piece {
      type;
      img;
      color;
@@ -16,12 +16,16 @@ export default class Pieces {
 }
 
 export class PieceFactory {
-     static new(type, img, color) {
-          if (color === white) {
+     static newPiece(color, type, img) {
+          if (color === 'white') {
                img = `${type}_w.png`
-          } else if (color === black) {
+          } else if (color === 'black') {
                img = `${type}_b.png`
           }
-          
+          return new Piece(type, img, color)     
      }
-};
+}; 
+
+
+
+

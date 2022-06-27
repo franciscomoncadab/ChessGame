@@ -1,14 +1,29 @@
 import React from 'react'
-import Board from '../Board/Board';
+import Tile from '../Tile/Tile'
+import initializeChess from '../../helpers/init'
 import './Chessboard.css'
+import { useEffect, useState } from 'react';
 
-//const ejeY = ['1', '2', '3', '4', '5', '6', '7', '8'];
-//const ejeX = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
 
 
 export default function Chessboard() {
+  const [initial, setInitial] = useState([])
+  useEffect(() => {
+    setInitial(initializeChess())}
+    , [])
 
+    console.log(initial)
+    
   return (
-    <Board id="chessboard"/>
+    <div id="chessboard">
+      {initial.map((piece, index) => 
+        <Tile 
+          key={index}
+          keyvalue={index}
+          img={piece ? piece.img : null}
+          //color={piece.color}
+        />)} 
+    </div>
   )
 }

@@ -26,7 +26,7 @@ export default class Board extends Component {
                const squareShade = (createColor(i) && createColor(j)) || (!createColor(i) && !createColor(j)) ? 'blue-tile' : 'white-tile';
                tile.push(this.renderSquare((i * 8) + j, squareShade));            
     }
-    board.push(<div classname='tile' key={i}>{tile}</div>);
+    board.push(<div className='tile' key={i}>{tile}</div>);
   };
 
 

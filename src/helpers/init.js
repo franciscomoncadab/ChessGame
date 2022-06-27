@@ -1,4 +1,4 @@
-import { Piece, PieceFactory } from '../pieces/piece';
+import { Piece, PieceFactory } from '../components/pieces/pieces';
 
 export default function initializeChess() {
   const squares = Array(64).fill(null);
