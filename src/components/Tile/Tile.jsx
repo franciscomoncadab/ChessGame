@@ -1,4 +1,4 @@
-import React from 'react'
+/*import React from 'react'
 import './Tile.css'
 
 const Tile = (props) => {
@@ -10,4 +10,20 @@ const Tile = (props) => {
      }
 }
 
-export default Tile
+export default Tile */
+
+import React from 'react'
+import './Tile.css'
+
+export default function Tile(props) {
+  return (
+    <button className={`tile ${props.shade}`}
+     onClick={props.onClick}
+     //style={props.style}
+     keyValue={props.keyValue}
+    >
+    {}
+
+    </button>
+  );
+}
