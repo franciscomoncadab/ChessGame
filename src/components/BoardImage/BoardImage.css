@@ -1,0 +1,18 @@
+.board{
+     display: grid;
+     justify-content: center;
+     width: 100px;
+     height: 100px;
+}
+
+.piece-black{
+     background-color: ##48C9B0;
+}
+
+.piece-white{
+     background-color: #ebecd0
+}
+
+.board img{
+     width: 90px;
+}
