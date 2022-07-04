@@ -29,6 +29,37 @@ for (let i = 0; i < 8; i++) {
      pieces.push(PieceFactory.newPiece('w', 'pawn', `assets/pawn_w.png`, i, 1));     
 }
 
+let activePieces = null;
+
+function grabPieces(e) {
+     const elem = e.target
+     if(elem.classList.contains('chess-piece')){
+          const x = e.clientX - 50;
+          const y = e.clientY - 50;
+          elem.style.position = 'absolute';
+          elem.style.left = `${x}px`;
+          elem.style.top = `${y}px`;
+
+          activePieces = elem;
+     }
+}
+
+function movePieces(e) {
+     if(activePieces){
+          const x = e.clientX - 50;
+          const y = e.clientY - 50;
+          activePieces.style.position = 'absolute';
+          activePieces.style.left = `${x}px`;
+          activePieces.style.top = `${y}px`;
+     }
+}
+
+function dropPieces() {
+     if (activePieces){
+          activePieces = null;
+     }
+}
+
 export default function Chessboard() {
      let board = [];
 
@@ -43,13 +74,17 @@ export default function Chessboard() {
                     }
                })
 
-               board.push( <BoardImage image={image} number={number} />)
+               board.push( <BoardImage key={`${j}, ${i}`} image={image} number={number} />)
           }
           
      }
 
   return (
-    <div id="chessboard">
+    <div 
+          onMouseMove={e => movePieces(e)} 
+          onMouseDown={e => grabPieces(e)} 
+          onMouseUp={e => dropPieces(e)}
+          id="chessboard">
      {board}    
     </div>
   )
