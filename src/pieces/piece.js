@@ -1,5 +1,4 @@
 
-
 export default class Piece {
      type;
      pieceType;
