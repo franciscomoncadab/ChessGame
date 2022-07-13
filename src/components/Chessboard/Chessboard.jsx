@@ -1,15 +1,18 @@
 import { useRef, useState } from "react";
 import { PieceFactory } from "../../pieces/piece";
 import BoardImage from "../BoardImage/BoardImage";
+import Referee from "../../ref/ref"
 import "./Chessboard.css";
 
 const ejeY = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const ejeX = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-const initialBoard = [];
+
+export const initialBoard = [];
 for (let p = 0; p < 2; p++) {
-  const type = p === 0 ? "b" : "w";
-  const y = p === 0 ? 7 : 0;
+  const teamType = (p === 0) ? 'opponent' : 'our';
+  const type = (teamType === 'opponent') ? "b" : "w";
+  const y = (teamType === 'opponent') ? 7 : 0;
 
   initialBoard.push(
     PieceFactory.newPiece(type, "rook", `assets/rook_${type}.png`, 0, y)
@@ -50,6 +53,7 @@ for (let i = 0; i < 8; i++) {
 }
 
 export default function Chessboard() {
+  const referee = new Referee();
   const chessRef = useRef(null);
   const [activePieces, setActivePieces] = useState(null);
   const [pieces, setPieces] = useState(initialBoard);
@@ -112,17 +116,70 @@ export default function Chessboard() {
         Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100)
       );
 
-      setPieces((value) => {
+      const currentPieces = pieces.find(p => p.x === gridX && p.y === gridY);
+      const attackPieces = pieces.find(p => p.x === x && p.y === y);
+
+      if(currentPieces) {
+        const validPieces = referee.isValidMove(gridX, gridY, x, y, currentPieces.pieceType, currentPieces.teamType, pieces);
+
+        const updatePieces = pieces.reduce((result, piece) => {
+          if(piece.x === currentPieces.x && piece.y === currentPieces.y){
+            piece.x = x;
+            piece.y = y;
+            result.push(piece);
+          } else if(!(piece.x === x && piece.y === y)) {
+            result.push(piece);              
+          }
+          return result;
+        }, []);
+
+        setPieces(updatePieces)
+
+        /*setPieces((value) => {
+          const pieces = value.reduce((result, piece) => {
+            if(piece.x === currentPieces.x && piece.y === currentPieces.y){
+              piece.x = x;
+              piece.y = y;
+              result.push(piece);
+            } else if(!(piece.x === x && piece.y === y)) {
+              result.push(piece);              
+            }
+            return result;
+          }, []);
+          return pieces;
+        });*/
+      } else {
+        activePieces.style.position = "relative";
+        activePieces.style.removeProperty("top");
+        activePieces.style.removeProperty("left");        
+      }
+
+/*      setPieces((value) => {
         const pieces = value.map((p) => {
           if (p.x === gridX && p.y === gridY) {
+            const validMove = referee.isValidMove(
+              gridX,
+              gridY,
+              x,
+              y, 
+              p.pieceType, 
+              p.teamType,
+              value);
+
+          if(validMove){
             p.x = x;
             p.y = y;
+          } else {
+            activePieces.style.position = "relative";
+            activePieces.style.removeProperty("top");
+            activePieces.style.removeProperty("left"); 
           }
+        }
           return p;
         });
         return pieces;
       });
-
+*/
       setActivePieces(null);
     }
   }

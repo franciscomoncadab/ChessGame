@@ -1,13 +1,13 @@
 
 export default class Piece {
-     type;
+     teamType;
      pieceType;
      image;
      x;
      y;
 
-     constructor(type, pieceType, image, x, y) {
-          this.type = type;
+     constructor(teamType, pieceType, image, x, y) {
+          this.teamType = teamType;
           this.pieceType = pieceType;
           this.image = image;
           this.x = x;
@@ -17,7 +17,7 @@ export default class Piece {
 }
 
 export class PieceFactory {
-     static newPiece(type, pieceType, image, x, y) {
-          return new Piece(type, pieceType, image, x, y)
+     static newPiece(teamType, pieceType, image, x, y) {
+          return new Piece(teamType, pieceType, image, x, y)
      }
 }
