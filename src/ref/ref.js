@@ -1,5 +1,3 @@
-import { initialBoard } from "../components/Chessboard/Chessboard";
-
 export default class referee {
   isOccupied(x, y, initialBoard) {
     const piece = initialBoard.find((p) => p.x === x && p.y === y);
@@ -27,13 +25,15 @@ export default class referee {
 
     if (pieceType === "pawn") {
       if ((x - px === -1 || x - px === 1) && y - py === pawnDirection) {
-          const piece = initialBoard.find(
-               (p) => p.x === x && p.y === y - pawnDirection && p.enPassant
-             );
-          return true;        
-      } 
+        const piece = initialBoard.find(
+          (p) => p.x === x && p.y === y - pawnDirection && p.enPassant
+        );
+        if (piece) {
+          return true;
+        }
+      }
     }
-    
+
     return false;
   }
 
@@ -54,7 +54,6 @@ export default class referee {
           return true;
         }
       } else if (x - px === -1 && y - py === pawnDirection) {
-        console.log("I can move this pawn");
         if (this.canAttackEnemy(x, y, initialBoard, teamType)) {
           return true;
         }
@@ -63,6 +62,28 @@ export default class referee {
           return true;
         }
       }
+    } else if (pieceType === "knight") {
+      console.log("u can move knight");
+
+      for(let i = -1; i < 2; i += 2){
+          if (y - py === 2 * i) {
+               if (x - px === -1) {
+                 console.log(" u can move top or bottom left");
+               }
+               if (x - px === 1) {
+                 console.log(" u can move top or bottom right");
+               }
+             }
+
+             if (x - px === 2 * i) {
+               if (y - py === -1) {
+                 console.log(" u can move right or left bottom");
+               }
+               if (y - py === 1) {
+                 console.log(" u can move right or left top");
+               }
+             }
+      }     
     }
     return false;
   }

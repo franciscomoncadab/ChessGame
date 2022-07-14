@@ -1,11 +1,9 @@
 import { useRef, useState } from "react";
 import { PieceFactory } from "../../pieces/piece";
+import { ejeX, ejeY, GRID_SIZE } from "../../utils/constants";
 import BoardImage from "../BoardImage/BoardImage";
 import Referee from "../../ref/ref";
 import "./Chessboard.css";
-
-const ejeY = ["1", "2", "3", "4", "5", "6", "7", "8"];
-const ejeX = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 export const initialBoard = [];
 for (let p = 0; p < 2; p++) {
@@ -20,7 +18,7 @@ for (let p = 0; p < 2; p++) {
     PieceFactory.newPiece(type, "rook", `assets/rook_${type}.png`, 7, y)
   );
   initialBoard.push(
-    PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 1, y)
+    PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 3, 3)
   );
   initialBoard.push(
     PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 6, y)
@@ -63,12 +61,14 @@ export default function Chessboard() {
     const chessboard = chessRef.current;
     const elem = e.target;
     if (elem.classList.contains("chess-piece") && chessboard) {
-      setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / 100));
+      setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE));
       setGridY(
-        Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100))
+        Math.abs(
+          Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
+        )
       );
-      const x = e.clientX - 50;
-      const y = e.clientY - 50;
+      const x = e.clientX - GRID_SIZE / 2;
+      const y = e.clientY - GRID_SIZE / 2;
       elem.style.position = "absolute";
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
@@ -109,13 +109,12 @@ export default function Chessboard() {
   function dropPieces(e) {
     const chessboard = chessRef.current;
     if (activePieces && chessboard) {
-      const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+      const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
       const y = Math.abs(
-        Math.ceil((e.clientY - chessboard.offsetTop - 800) / 100)
+        Math.ceil((e.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
       );
 
       const currentPieces = pieces.find((p) => p.x === gridX && p.y === gridY);
-      const attackPieces = pieces.find((p) => p.x === x && p.y === y);
 
       if (currentPieces) {
         const validPieces = referee.isValidMove(
@@ -141,13 +140,13 @@ export default function Chessboard() {
         if (isEnPassant) {
           const pawnDirection = currentPieces.teamType === "w" ? 1 : -1;
           const updatePieces = pieces.reduce((result, piece) => {
-            if(piece.x === gridX && piece.y === gridY) {
+            if (piece.x === gridX && piece.y === gridY) {
               piece.enPassant = false;
               piece.x = x;
               piece.y = y;
               result.push(piece);
             } else if (!(piece.x === x && piece.y === y - pawnDirection)) {
-              if(currentPieces.pieceType === "pawn"){
+              if (currentPieces.pieceType === "pawn") {
                 piece.enPassant = false;
               }
               result.push(piece);
@@ -159,7 +158,10 @@ export default function Chessboard() {
         } else if (validPieces) {
           const updatePieces = pieces.reduce((result, piece) => {
             if (piece.x === gridX && piece.y === gridY) {
-              if(Math.abs(gridY -y) === 2 && currentPieces.pieceType === "pawn") {
+              if (
+                Math.abs(gridY - y) === 2 &&
+                currentPieces.pieceType === "pawn"
+              ) {
                 piece.enPassant = true;
               } else {
                 piece.enPassant = false;
@@ -168,7 +170,7 @@ export default function Chessboard() {
               piece.y = y;
               result.push(piece);
             } else if (!(piece.x === x && piece.y === y)) {
-              if(currentPieces.pieceType === "pawn"){
+              if (currentPieces.pieceType === "pawn") {
                 piece.enPassant = false;
               }
               result.push(piece);
@@ -193,14 +195,8 @@ export default function Chessboard() {
   for (let j = ejeY.length - 1; j >= 0; j--) {
     for (let i = 0; i < ejeX.length; i++) {
       const number = j + i + 2;
-      let image = undefined;
-
-      pieces.forEach((p) => {
-        if (p.x === i && p.y === j) {
-          image = p.image;
-        }
-      });
-
+      const piece = pieces.find((p) => p.x === i && p.y === j);
+      let image = piece ? piece.image : undefined;
       board.push(
         <BoardImage key={`${j}, ${i}`} image={image} number={number} />
       );
