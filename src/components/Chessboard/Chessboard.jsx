@@ -18,7 +18,7 @@ for (let p = 0; p < 2; p++) {
     PieceFactory.newPiece(type, "rook", `assets/rook_${type}.png`, 7, y)
   );
   initialBoard.push(
-    PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 3, 3)
+    PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 1, y)
   );
   initialBoard.push(
     PieceFactory.newPiece(type, "knight", `assets/knight_${type}.png`, 6, y)
