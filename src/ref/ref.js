@@ -231,103 +231,47 @@ export default class referee {
 
   queenMove(px, py, x, y, teamType, initialBoard) {
     for (let i = 1; i < 8; i++) {
-      //Vertical movement
-      if (x === px) {
-        let upOrDown = y < py ? -1 : 1;
-        let passY = py + i * upOrDown;
-        if (px === x && passY === y) {
-          if (
-            this.isOccupiedOrCanAttackEnemy(x, passY, initialBoard, teamType)
-          ) {
-            return true;
-          }
-        } else {
-          if (this.isOccupied(x, passY, initialBoard)) {
-            break;
-          }
+      //Complete movement
+      let upOrDown = y < py ? -1 : y > py ? 1 : 0;
+      let rightOrLeft = x < px ? -1 : x > px ? 1 : 0;
+      let passX = px + i * rightOrLeft;
+      let passY = py + i * upOrDown;
+      if (passX === x && passY === y) {
+        if (
+          this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)
+        ) {
+          return true;
+        }
+      } else {
+        if (this.isOccupied(passX, passY, initialBoard)) {
+          break;
         }
       }
-      //Horizontal movement
-      if (y === py) {
-        let rightOrLeft = x < px ? -1 : 1;
-        let passX = px + i * rightOrLeft;
-        if (passX === x && py === y) {
-          if (
-            this.isOccupiedOrCanAttackEnemy(passX, y, initialBoard, teamType)
-          ) {
-            return true;
-          }
-        } else {
-          if (this.isOccupied(passX, y, initialBoard)) {
-            break;
-          }
-        }
-      }
-      
-      //Top right
-          let upOrDown = y < py ? -1 : 1;
-          let rightOrLeft = x < px ? -1 : 1;
-          console.log("u can move top right");
-          let passX = px + (i * rightOrLeft); 
-          let passY = py + (i * upOrDown);
-          if(passX === x && passY === y) {
-               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
-                    return true;
-               }
-          } else {
-               if(this.isOccupied(passX, passY, initialBoard)) {
-                    break;
-               }
-          }
-     }
-/*
-     //Bottom right
-      if (y < py && x > px) {
-        console.log("u can move bottom right");
-        let passX = px + i; 
-          let passY = py - i;
-          if(passX === x && passY === y) {
-               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
-                    return true;
-               }
-          } else {
-               if(this.isOccupied(passX, passY, initialBoard)) {
-                    break;
-               }
-          }
-      }
-      //Bottom left
-      if (y < py && x < px) {
-        console.log("u can move bottom left");
-        let passX = px - i; 
-          let passY = py - i;
-          if(passX === x && passY === y) {
-               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
-                    return true;
-               }
-          } else {
-               if(this.isOccupied(passX, passY, initialBoard)) {
-                    break;
-               }
-          }
-      }
-      //Top left
-      if (y > py && x < px) {
-        console.log("u can move top left");
-        let passX = px - i; 
-          let passY = py + i;
-          if(passX === x && passY === y) {
-               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
-                    return true;
-               }
-          } else {
-               if(this.isOccupied(passX, passY, initialBoard)) {
-                    break;
-               }
-          }
-      }
-    }*/
+    }
     return false;
+  };
+
+  kingMove(px, py, x, y, teamType, initialBoard) {
+    console.log("u can king Move");
+    for (let i = 1; i < 2; i++) {
+      //Complete movement
+      let upOrDown = y < py ? -1 : y > py ? 1 : 0;
+      let rightOrLeft = x < px ? -1 : x > px ? 1 : 0;
+      let passX = px + i * rightOrLeft;
+      let passY = py + i * upOrDown;
+      if (passX === x && passY === y) {
+        if (
+          this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)
+        ) {
+          return true;
+        }
+      } else {
+        if (this.isOccupied(passX, passY, initialBoard)) {
+          break;
+        }
+      }
+    }
+    return false; 
   }
 
   isValidMove(px, py, x, y, pieceType, teamType, initialBoard) {
@@ -349,7 +293,7 @@ export default class referee {
         validMove = this.queenMove(px, py, x, y, teamType, initialBoard);
         break;
       case (pieceType = "king"):
-      //validMove = this.kingMove(px, py, x, y, teamType, initialBoard);
+        validMove = this.kingMove(px, py, x, y, teamType, initialBoard);
     }
     return validMove;
   }
