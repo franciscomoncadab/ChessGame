@@ -190,7 +190,6 @@ export default class referee {
 
   rookMove(px, py, x, y, teamType, initialBoard) {
     if (px === x) {
-      console.log("can move vertically");
       for (let i = 1; i < 8; i++) {
         let upOrDown = y < py ? -1 : 1;
         let passY = py + i * upOrDown;
@@ -210,7 +209,6 @@ export default class referee {
     }
 
     if (py === y) {
-      console.log("can move horizontally");
       for (let i = 1; i < 8; i++) {
         let rightOrLeft = x < px ? -1 : 1;
         let passX = px + i * rightOrLeft;
@@ -228,7 +226,107 @@ export default class referee {
         }
       }
     }
+    return false;
+  }
 
+  queenMove(px, py, x, y, teamType, initialBoard) {
+    for (let i = 1; i < 8; i++) {
+      //Vertical movement
+      if (x === px) {
+        let upOrDown = y < py ? -1 : 1;
+        let passY = py + i * upOrDown;
+        if (px === x && passY === y) {
+          if (
+            this.isOccupiedOrCanAttackEnemy(x, passY, initialBoard, teamType)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.isOccupied(x, passY, initialBoard)) {
+            break;
+          }
+        }
+      }
+      //Horizontal movement
+      if (y === py) {
+        let rightOrLeft = x < px ? -1 : 1;
+        let passX = px + i * rightOrLeft;
+        if (passX === x && py === y) {
+          if (
+            this.isOccupiedOrCanAttackEnemy(passX, y, initialBoard, teamType)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.isOccupied(passX, y, initialBoard)) {
+            break;
+          }
+        }
+      }
+      
+      //Top right
+          let upOrDown = y < py ? -1 : 1;
+          let rightOrLeft = x < px ? -1 : 1;
+          console.log("u can move top right");
+          let passX = px + (i * rightOrLeft); 
+          let passY = py + (i * upOrDown);
+          if(passX === x && passY === y) {
+               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
+                    return true;
+               }
+          } else {
+               if(this.isOccupied(passX, passY, initialBoard)) {
+                    break;
+               }
+          }
+     }
+/*
+     //Bottom right
+      if (y < py && x > px) {
+        console.log("u can move bottom right");
+        let passX = px + i; 
+          let passY = py - i;
+          if(passX === x && passY === y) {
+               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
+                    return true;
+               }
+          } else {
+               if(this.isOccupied(passX, passY, initialBoard)) {
+                    break;
+               }
+          }
+      }
+      //Bottom left
+      if (y < py && x < px) {
+        console.log("u can move bottom left");
+        let passX = px - i; 
+          let passY = py - i;
+          if(passX === x && passY === y) {
+               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
+                    return true;
+               }
+          } else {
+               if(this.isOccupied(passX, passY, initialBoard)) {
+                    break;
+               }
+          }
+      }
+      //Top left
+      if (y > py && x < px) {
+        console.log("u can move top left");
+        let passX = px - i; 
+          let passY = py + i;
+          if(passX === x && passY === y) {
+               if(this.isOccupiedOrCanAttackEnemy(passX, passY, initialBoard, teamType)) {
+                    return true;
+               }
+          } else {
+               if(this.isOccupied(passX, passY, initialBoard)) {
+                    break;
+               }
+          }
+      }
+    }*/
     return false;
   }
 
@@ -246,6 +344,12 @@ export default class referee {
         break;
       case (pieceType = "rook"):
         validMove = this.rookMove(px, py, x, y, teamType, initialBoard);
+        break;
+      case (pieceType = "queen"):
+        validMove = this.queenMove(px, py, x, y, teamType, initialBoard);
+        break;
+      case (pieceType = "king"):
+      //validMove = this.kingMove(px, py, x, y, teamType, initialBoard);
     }
     return validMove;
   }
