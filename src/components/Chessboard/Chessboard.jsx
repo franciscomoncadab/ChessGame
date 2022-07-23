@@ -33,7 +33,7 @@ for (let p = 0; p < 2; p++) {
     PieceFactory.newPiece(type, "queen", `assets/queen_${type}.png`, 3, y)
   );
   initialBoard.push(
-    PieceFactory.newPiece(type, "king", `assets/king_${type}.png`, 4, 4)
+    PieceFactory.newPiece(type, "king", `assets/king_${type}.png`, 4, y)
   );
 }
 
