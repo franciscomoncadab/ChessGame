@@ -6,3 +6,38 @@
      height: 800px;
      background-color: #1D8348;
 }
+
+#modal-promotion {
+     position: absolute;
+     top: 0px;
+     left: 0px;
+     right: 0px;
+     bottom: 0px;
+}
+
+#modal-promotion.hidden {
+     display: none;
+}
+
+#modal-promotion > .modal {
+     position: absolute;
+     top: 26.8%;
+     left: 17.6%;
+     height: 400px;
+     width: 800px;
+     display: flex;
+     align-items: center;
+     justify-content: space-around;
+     background-color: rgba(23, 32, 42, 0.6);
+}
+
+#modal-promotion > .modal >img {
+     height: 115px;
+     padding: 35px;
+     border-radius: 15%;
+}
+
+#modal-promotion > .modal >img:hover {
+     background: rgba(131, 145, 146, 0.8);
+     cursor: pointer;
+}

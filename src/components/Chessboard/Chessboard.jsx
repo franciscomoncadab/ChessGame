@@ -52,7 +52,9 @@ for (let i = 0; i < 8; i++) {
 export default function Chessboard() {
   const referee = new Referee();
   const chessRef = useRef(null);
+  const modalRef = useRef(null);
   const [activePieces, setActivePieces] = useState(null);
+  const [promotionPawn, setPromotionPawn] = useState();
   const [pieces, setPieces] = useState(initialBoard);
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
@@ -168,6 +170,13 @@ export default function Chessboard() {
               }
               piece.x = x;
               piece.y = y;
+
+              let canBePromotion = piece.teamType === "w" ? 7 : 0;
+
+              if (y === canBePromotion) {
+                modalRef.current.classList.remove("hidden");
+                setPromotionPawn(piece);
+              }
               result.push(piece);
             } else if (!(piece.x === x && piece.y === y)) {
               if (currentPieces.pieceType === "pawn") {
@@ -190,6 +199,21 @@ export default function Chessboard() {
     }
   }
 
+  function promotePawn(pieceType) {
+    const updatePieces = pieces.reduce((result, piece) => {
+      if(piece.x === promotionPawn.x && piece.y === promotionPawn.y){
+        piece.pieceType = pieceType;
+        const teamType = (piece.teamType === 'w') ? 'w' : 'b';
+        piece.image = `assets/rook_${teamType}.png`;
+      }
+      result.push(piece);
+      return result;
+    }, []);
+    setPieces(updatePieces);
+    modalRef.current.classList.add("hidden");
+  }
+  
+
   let board = [];
 
   for (let j = ejeY.length - 1; j >= 0; j--) {
@@ -204,14 +228,40 @@ export default function Chessboard() {
   }
 
   return (
-    <div
-      onMouseMove={(e) => movePieces(e)}
-      onMouseDown={(e) => grabPieces(e)}
-      onMouseUp={(e) => dropPieces(e)}
-      id="chessboard"
-      ref={chessRef}
-    >
-      {board}
-    </div>
+    <>
+      <div id="modal-promotion" className="hidden" ref={modalRef}>
+        <div className="modal">
+          <img
+            onClick={() => promotePawn("rook")}
+            src="/assets/rook_w.png"
+            alt="rook"
+          />
+          <img
+            onClick={() => promotePawn("knight")}
+            src="/assets/knight_w.png"
+            alt="knight"
+          />
+          <img
+            onClick={() => promotePawn("bishop")}
+            src="/assets/bishop_w.png"
+            alt="bishop"
+          />
+          <img
+            onClick={() => promotePawn("queen")}
+            src="/assets/queen_w.png"
+            alt="queen"
+          />
+        </div>
+      </div>
+      <div
+        onMouseMove={(e) => movePieces(e)}
+        onMouseDown={(e) => grabPieces(e)}
+        onMouseUp={(e) => dropPieces(e)}
+        id="chessboard"
+        ref={chessRef}
+      >
+        {board}
+      </div>
+    </>
   );
 }
