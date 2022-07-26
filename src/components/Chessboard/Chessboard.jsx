@@ -173,7 +173,7 @@ export default function Chessboard() {
 
               let canBePromotion = piece.teamType === "w" ? 7 : 0;
 
-              if (y === canBePromotion) {
+              if (y === canBePromotion && piece.pieceType === "pawn") {
                 modalRef.current.classList.remove("hidden");
                 setPromotionPawn(piece);
               }
@@ -203,8 +203,18 @@ export default function Chessboard() {
     const updatePieces = pieces.reduce((result, piece) => {
       if(piece.x === promotionPawn.x && piece.y === promotionPawn.y){
         piece.pieceType = pieceType;
-        const teamType = (piece.teamType === 'w') ? 'w' : 'b';
-        piece.image = `assets/rook_${teamType}.png`;
+        const teamType = (piece.teamType === 'w') ? 'w' : 'b'
+        /*switch (pieceType) {
+          case pieceType === "rook": 
+            break;          
+          case pieceType === "knight":
+            break;          
+          case pieceType === "bishop": 
+            break;
+          case pieceType === "queen": 
+            break;
+        }*/
+        piece.image = `assets/${pieceType}_${teamType}.png`;
       }
       result.push(piece);
       return result;
@@ -213,7 +223,6 @@ export default function Chessboard() {
     modalRef.current.classList.add("hidden");
   }
   
-
   let board = [];
 
   for (let j = ejeY.length - 1; j >= 0; j--) {
