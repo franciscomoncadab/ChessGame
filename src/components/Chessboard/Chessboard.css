@@ -21,8 +21,8 @@
 
 #modal-promotion > .modal {
      position: absolute;
-     top: 26.8%;
-     left: 17.6%;
+     top: calc(50% - 150px);
+     left: calc(50% - 400px);
      height: 400px;
      width: 800px;
      display: flex;
