@@ -8,11 +8,8 @@
 }
 
 #modal-promotion {
-     position: absolute;
-     top: 0px;
-     left: 0px;
-     right: 0px;
-     bottom: 0px;
+     display: flex;
+     margin: auto;
 }
 
 #modal-promotion.hidden {
@@ -29,6 +26,7 @@
      align-items: center;
      justify-content: space-around;
      background-color: rgba(23, 32, 42, 0.6);
+     z-index: 1;
 }
 
 #modal-promotion > .modal >img {
