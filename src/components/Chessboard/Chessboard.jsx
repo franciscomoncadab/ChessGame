@@ -1,9 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { PieceFactory } from "../../pieces/piece";
 import { ejeX, ejeY, GRID_SIZE } from "../../utils/constants";
 import BoardImage from "../BoardImage/BoardImage";
 import Referee from "../../ref/ref";
 import "./Chessboard.css";
+import {io} from "socket.io-client"
+
+let socket;
 
 export const initialBoard = [];
 for (let p = 0; p < 2; p++) {
@@ -58,6 +61,12 @@ export default function Chessboard() {
   const [pieces, setPieces] = useState(initialBoard);
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
+
+  useEffect(() => {
+    socket = io('http://localhost:8080');
+    socket.emit('conectando')
+  }, [])
+  
 
   function grabPieces(e) {
     const chessboard = chessRef.current;
