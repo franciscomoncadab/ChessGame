@@ -64,8 +64,13 @@ export default function Chessboard() {
 
   useEffect(() => {
     socket = io('http://localhost:8080');
-    socket.emit('conectando')
+    socket.emit('conectando');
+
+    socket.on('result', () => {
+      console.log('desde backend')
+    });
   }, [])
+
   
 
   function grabPieces(e) {
@@ -204,10 +209,13 @@ export default function Chessboard() {
         }
 
         setActivePieces(null);
+        
+        //socket.emit('movingPieces', pieces);
       }
     }
   }
 
+  
   function promotePawn(pieceType) {
     const updatePieces = pieces.reduce((result, piece) => {
       if(piece.x === promotionPawn.x && piece.y === promotionPawn.y){
