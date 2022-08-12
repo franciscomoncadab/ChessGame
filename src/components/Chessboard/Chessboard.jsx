@@ -6,7 +6,7 @@ import Referee from "../../ref/ref";
 import "./Chessboard.css";
 import {io} from "socket.io-client"
 
-let socket;
+//let socket;
 
 export const initialBoard = [];
 for (let p = 0; p < 2; p++) {
@@ -62,14 +62,15 @@ export default function Chessboard() {
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
 
+  let socket;
   useEffect(() => {
     socket = io('http://localhost:8080');
-    socket.emit('conectando');
+    socket.emit('conectando desde frontend');
 
     socket.on('result', () => {
-      console.log('desde backend')
+      console.log('conexion desde backend')
     });
-  }, [])
+  })
 
   
 
@@ -90,6 +91,10 @@ export default function Chessboard() {
       elem.style.top = `${y}px`;
 
       setActivePieces(elem);
+      socket.emit('updateGrabPieces');
+      socket.on('grabPiecesBackend', () => {
+        console.log('grabPiece desde backend')
+      })
     }
   }
 
@@ -110,7 +115,7 @@ export default function Chessboard() {
         activePieces.style.left = `${maxX}px`;
       } else {
         activePieces.style.left = `${x}px`;
-      }
+      };
 
       if (y < minY) {
         activePieces.style.top = `${minY}px`;
@@ -118,7 +123,13 @@ export default function Chessboard() {
         activePieces.style.top = `${maxY}px`;
       } else {
         activePieces.style.top = `${y}px`;
-      }
+      };
+
+      
+    /*socket.emit('updateMovePieces')
+    socket.on('movePiecesBackend', () => {
+      console.log('movePieces desde backend');
+    });*/
     }
   }
 
@@ -209,9 +220,11 @@ export default function Chessboard() {
         }
 
         setActivePieces(null);
-        
-        //socket.emit('movingPieces', pieces);
       }
+      socket.emit('updateDropPieces', pieces);
+        socket.on('dropPiecesBackend', (pieces) => {
+          console.log('drop pieces desde backend', pieces);
+        })
     }
   }
 
