@@ -4,7 +4,7 @@ import { ejeX, ejeY, GRID_SIZE } from "../../utils/constants";
 import BoardImage from "../BoardImage/BoardImage";
 import Referee from "../../ref/ref";
 import "./Chessboard.css";
-import {io} from "socket.io-client"
+import { Socket } from "socket.io-client";
 
 //let socket;
 
@@ -52,7 +52,9 @@ for (let i = 0; i < 8; i++) {
   );
 }
 
-export default function Chessboard() {
+export default function Chessboard(params) {
+  const socket = params.socket
+  console.log("Socket", socket)
   const referee = new Referee();
   const chessRef = useRef(null);
   const modalRef = useRef(null);
@@ -62,14 +64,8 @@ export default function Chessboard() {
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
 
-  let socket;
   useEffect(() => {
-    socket = io('http://localhost:8080');
-    socket.emit('conectando desde frontend');
-
-    socket.on('result', () => {
-      console.log('conexion desde backend')
-    });
+    
   })
 
   
@@ -222,9 +218,6 @@ export default function Chessboard() {
         setActivePieces(null);
       }
       socket.emit('updateDropPieces', pieces);
-        socket.on('dropPiecesBackend', (pieces) => {
-          console.log('drop pieces desde backend', pieces);
-        })
     }
   }
 
