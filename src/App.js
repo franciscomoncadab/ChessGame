@@ -1,9 +1,7 @@
 import './App.css';
-import Chessboard from './components/Chessboard/Chessboard'
+import Chessboard, {setPieces} from './components/Chessboard/Chessboard'
 import {io} from "socket.io-client"
 
-
-console.log("creamos websocket !!!!");
   
 let socket = io('http://localhost:8080', { transports: ["websocket"] });
 
@@ -13,18 +11,15 @@ socket.on("connect", () => {
   socket.emit('mensjae de oleh');
 });
 
-// socket.on("connect", (socket) => {
-//   console.log("estamos conectados")
-//   socket.emit('mensjae de oleh');
-// });
-
 socket.on("connect_error", (err) => {
   console.log("socket error", err)
 });
 
 socket.on('dropPiecesBackend', (pieces) => {
   console.log('drop pieces desde backend', pieces);
+  const newBoard = pieces
 })
+
 
 function App() {
 
