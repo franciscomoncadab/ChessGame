@@ -3,7 +3,7 @@ import Chessboard, {setPieces} from './components/Chessboard/Chessboard'
 import {io} from "socket.io-client"
 
   
-let socket = io('http://localhost:8080', { transports: ["websocket"] });
+let socket = io(process.env.REACT_APP_BACKEND_URI || 'http://localhost:8080', { transports: ["websocket"] });
 
 socket.on("connect", () => {
   console.log("estamos conectados")
