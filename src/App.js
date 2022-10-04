@@ -7,7 +7,7 @@ let socket = io(process.env.REACT_APP_BACKEND_URI || 'http://localhost:8080', { 
 
 socket.on("connect", () => {
   console.log("estamos conectados")
-  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+  //console.log(socket.id); // x8WIv7-mJelg7on_ALbx
   socket.emit('mensjae de oleh');
 });
 
@@ -16,8 +16,8 @@ socket.on("connect_error", (err) => {
 });
 
 socket.on('dropPiecesBackend', (pieces) => {
-  console.log('drop pieces desde backend', pieces);
-  const newBoard = pieces
+  //console.log('drop pieces desde backend', pieces);
+  //const newBoard = pieces
 })
 
 

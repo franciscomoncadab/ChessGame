@@ -1,11 +1,10 @@
-import { useRef, useState} from "react";
+import { useRef, useState } from "react";
 import { PieceFactory } from "../../pieces/piece";
 import { ejeX, ejeY, GRID_SIZE } from "../../utils/constants";
 import BoardImage from "../BoardImage/BoardImage";
 import Referee from "../../ref/ref";
 import "./Chessboard.css";
 import { useEffect } from "react";
-
 
 export const initialBoard = [];
 for (let p = 0; p < 2; p++) {
@@ -52,8 +51,7 @@ for (let i = 0; i < 8; i++) {
 }
 
 export default function Chessboard(params) {
-  const socket = params.socket
-  console.log("Socket", socket)
+  const socket = params.socket;
   const referee = new Referee();
   const chessRef = useRef(null);
   const modalRef = useRef(null);
@@ -62,11 +60,36 @@ export default function Chessboard(params) {
   const [pieces, setPieces] = useState(initialBoard);
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
+  const [turn, setTurn] = useState("w");
+  const [teamType, setTeamType] = useState(null);
 
+  useEffect(() => {
+    socket.emit("getCurrentPlayers");
+  }, []);
+
+  useEffect(() => {
+    socket.on("currentTurn", (t) => {
+      setTurn(t);
+    });
+
+    socket.on("currentTeamType", (p) => {
+      setTeamType(p);
+    });
+
+    socket.on("currentPlayers", (n) => {
+      console.log(n);
+    });
+  }, [socket]);
 
   function grabPieces(e) {
     const chessboard = chessRef.current;
     const elem = e.target;
+
+    console.log(teamType, turn);
+    if (teamType !== turn) {
+      return;
+    }
+
     if (elem.classList.contains("chess-piece") && chessboard) {
       setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE));
       setGridY(
@@ -101,7 +124,7 @@ export default function Chessboard(params) {
         activePieces.style.left = `${maxX}px`;
       } else {
         activePieces.style.left = `${x}px`;
-      };
+      }
 
       if (y < minY) {
         activePieces.style.top = `${minY}px`;
@@ -109,13 +132,7 @@ export default function Chessboard(params) {
         activePieces.style.top = `${maxY}px`;
       } else {
         activePieces.style.top = `${y}px`;
-      };
-
-      
-    /*socket.emit('updateMovePieces')
-    socket.on('movePiecesBackend', () => {
-      console.log('movePieces desde backend');
-    });*/
+      }
     }
   }
 
@@ -169,6 +186,11 @@ export default function Chessboard(params) {
 
           setPieces(updatePieces);
         } else if (validPieces) {
+          console.log(turn);
+          if (currentPieces.teamType !== turn) {
+            alert("This is not your turn");
+            return;
+          }
           const updatePieces = pieces.reduce((result, piece) => {
             if (piece.x === gridX && piece.y === gridY) {
               if (
@@ -198,8 +220,12 @@ export default function Chessboard(params) {
             return result;
           }, []);
 
-          socket.emit('updateDropPieces', updatePieces);
-          //setPieces(updatePieces);
+          if (currentPieces.teamType === turn) {
+            socket.emit("updateDropPieces", updatePieces);
+            socket.emit("getTurn");
+          } else {
+            alert("This is not your turn");
+          }
         } else {
           activePieces.style.position = "relative";
           activePieces.style.removeProperty("top");
@@ -208,24 +234,20 @@ export default function Chessboard(params) {
 
         setActivePieces(null);
       }
-      
     }
   }
 
   useEffect(() => {
-    socket.on('dropPiecesBackend', (data) => {
+    socket.on("dropPiecesBackend", (data) => {
       setPieces(data);
-    })  
-    
-  }, [socket])
-  
+    });
+  }, [socket]);
 
-  
   function promotePawn(pieceType) {
     const updatePieces = pieces.reduce((result, piece) => {
-      if(piece.x === promotionPawn.x && piece.y === promotionPawn.y){
+      if (piece.x === promotionPawn.x && piece.y === promotionPawn.y) {
         piece.pieceType = pieceType;
-        const teamType = (piece.teamType === 'w') ? 'w' : 'b'
+        const teamType = piece.teamType === "w" ? "w" : "b";
         piece.image = `assets/${pieceType}_${teamType}.png`;
       }
       result.push(piece);
@@ -234,7 +256,16 @@ export default function Chessboard(params) {
     setPieces(updatePieces);
     modalRef.current.classList.add("hidden");
   }
-  
+
+  function joinGame() {
+    socket.emit("joinGame");
+    socket.emit("getTeamType");
+  }
+
+  function resetGame() {
+    socket.emit("resetGame");
+  }
+
   let board = [];
 
   for (let j = ejeY.length - 1; j >= 0; j--) {
@@ -274,14 +305,32 @@ export default function Chessboard(params) {
           />
         </div>
       </div>
-      <div
-        onMouseMove={(e) => movePieces(e)}
-        onMouseDown={(e) => grabPieces(e)}
-        onMouseUp={(e) => dropPieces(e)}
-        id="chessboard"
-        ref={chessRef}
-      >
-        {board}
+      <div className="flex flex-row gap-8 ">
+        <div
+          onMouseMove={(e) => movePieces(e)}
+          onMouseDown={(e) => grabPieces(e)}
+          onMouseUp={(e) => dropPieces(e)}
+          id="chessboard"
+          ref={chessRef}
+        >
+          {board}
+        </div>
+        <div className="flex flex-col gap-20">
+          <button
+            type="button"
+            className="w-36 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-xl text-sm px-5 py-3.5 text-center mr-2 mb-2"
+            onClick={() => joinGame()}
+          >
+            Join Game!
+          </button>
+          <button
+            type="button"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3.5 mr-2 mb-2"
+            onClick={() => resetGame()}
+          >
+            Reset Game
+          </button>
+        </div>
       </div>
     </>
   );
