@@ -62,6 +62,7 @@ export default function Chessboard(params) {
   const [gridY, setGridY] = useState(0);
   const [turn, setTurn] = useState("w");
   const [teamType, setTeamType] = useState(null);
+  const [activePlayer, setActivePlayer] = useState(0);
 
   useEffect(() => {
     socket.emit("getCurrentPlayers");
@@ -77,7 +78,9 @@ export default function Chessboard(params) {
     });
 
     socket.on("currentPlayers", (n) => {
+      setActivePlayer(n);
       console.log(n);
+
     });
   }, [socket]);
 
@@ -260,10 +263,15 @@ export default function Chessboard(params) {
   function joinGame() {
     socket.emit("joinGame");
     socket.emit("getTeamType");
+    if(activePlayer === 2) {
+    alert("This game is full");
+    }
   }
 
   function resetGame() {
     socket.emit("resetGame");
+    alert("This game has been reset");
+    setActivePlayer(0);
   }
 
   let board = [];
@@ -330,7 +338,11 @@ export default function Chessboard(params) {
           >
             Reset Game
           </button>
-          <a href="#" class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+          <a href="." class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Game:</h5>
+            <p class="text-center font-normal text-gray-700 dark:text-gray-400">{activePlayer === 0 ? "Players in game: 0" : activePlayer === 1 ? " Players in game: 1" : "Players in game: 2"}</p>
+          </a>          
+          <a href="." class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Current Turn:</h5>
             <p class="text-center font-normal text-gray-700 dark:text-gray-400">{turn === 'w' ? "White" : " Black "}</p>
           </a>
